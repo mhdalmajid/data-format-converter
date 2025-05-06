@@ -1,0 +1,16 @@
+DataMorph Extension Icon Instructions
+
+To complete your DataMorph extension, you'll need to create an icon file named "datamorph-icon.png" in this directory.
+
+Recommended specifications:
+- Size: 128x128 pixels
+- Format: PNG with transparency
+- Colors: Use a color scheme that works well in both light and dark VS Code themes
+
+Icon design suggestion:
+- Create a simple icon representing data transformation
+- Consider using shapes that transform from one format to another
+- Use colors that represent the three supported formats (CSV, JSON, Excel)
+- Keep the design clean and recognizable at small sizes
+
+Once you've created your icon, place it in this directory with the filename "datamorph-icon.png" as referenced in the package.json file.

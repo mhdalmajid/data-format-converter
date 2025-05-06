@@ -1,0 +1,6 @@
+id,name,email,age,isActive,joinDate,tags,address,projects
+1,John Doe,john@example.com,32,1,2022-05-10,"[""developer"",""frontend""]","{""street"":""123 Main St"",""city"":""San Francisco"",""state"":""CA"",""zip"":""94105""}","[{""id"":1,""name"":""Website Redesign""},{""id"":2,""name"":""Mobile App""}]"
+2,Jane Smith,jane@example.com,28,1,2023-02-15,"[""designer"",""ux""]","{""street"":""456 Market St"",""city"":""New York"",""state"":""NY"",""zip"":""10001""}","[{""id"":2,""name"":""Mobile App""},{""id"":3,""name"":""Design System""}]"
+3,Bob Johnson,bob@example.com,41,,2021-11-30,"[""developer"",""backend""]","{""street"":""789 Park Ave"",""city"":""Seattle"",""state"":""WA"",""zip"":""98101""}","[{""id"":4,""name"":""API Integration""}]"
+4,Alice Williams,alice@example.com,35,1,2022-08-22,"[""product"",""management""]","{""street"":""321 Oak St"",""city"":""Austin"",""state"":""TX"",""zip"":""73301""}","[{""id"":2,""name"":""Mobile App""},{""id"":5,""name"":""Product Roadmap""}]"
+5,Charlie Brown,charlie@example.com,26,1,2023-04-01,"[""developer"",""fullstack""]","{""street"":""555 Pine St"",""city"":""Portland"",""state"":""OR"",""zip"":""97201""}","[{""id"":1,""name"":""Website Redesign""},{""id"":4,""name"":""API Integration""},{""id"":6,""name"":""Database Migration""}]"

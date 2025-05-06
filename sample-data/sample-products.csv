@@ -1,0 +1,11 @@
+product_id,product_name,category,price,stock,last_updated,in_stock,description
+101,Ergonomic Office Chair,Furniture,249.99,15,2024-01-15,true,"High-quality mesh back, adjustable height"
+102,Smartphone XL,Electronics,799.99,32,2024-02-21,true,"6.7 inch display, 128GB storage"
+103,Coffee Maker Deluxe,Kitchen,89.95,8,2023-11-30,true,"Programmable, 12-cup capacity"
+104,Wireless Earbuds,Electronics,129.95,0,2024-03-05,false,"Noise cancelling, waterproof design"
+105,Yoga Mat Premium,Fitness,45.50,22,2024-01-10,true,"Extra thick, non-slip surface"
+106,Stainless Steel Water Bottle,Kitchen,24.99,47,2023-12-18,true,"Double-walled insulation, 24oz"
+107,Smart Watch Pro,Electronics,199.95,12,2024-02-28,true,"Heart rate monitor, GPS tracking"
+108,Ultra HD Monitor,Electronics,349.99,5,2024-03-15,true,"32-inch, 4K resolution, HDMI ports"
+109,Bluetooth Speaker,Electronics,79.95,18,2023-10-25,true,"Portable, 12-hour battery life"
+110,Standing Desk Converter,Furniture,179.99,0,2024-02-10,false,"Adjustable height, keyboard tray"

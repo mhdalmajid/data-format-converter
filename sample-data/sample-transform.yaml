@@ -1,0 +1,29 @@
+# DataMorph Sample Transformation Rules
+# This YAML file defines how data should be transformed during conversion
+
+transformations:
+  - name: 'Filter Active Users'
+    enabled: true
+    # This condition will only keep records where isActive is true
+    condition: 'data.isActive === true'
+
+  - name: 'Rename Fields'
+    enabled: true
+    # This mapping will create new fields with the values from existing fields
+    mapping:
+      fullName: 'name' # Create 'fullName' field from 'name'
+      contactEmail: 'email' # Create 'contactEmail' field from 'email'
+
+  - name: 'Add Calculated Field'
+    enabled: true
+    # This will add a new field using a calculation based on existing fields
+    calculate:
+      field: 'projectCount'
+      expression: 'data.projects ? data.projects.length : 0'
+
+  - name: 'Convert Tag Array to String'
+    enabled: false # This transformation is disabled by default
+    # This will convert the tags array to a comma-separated string
+    calculate:
+      field: 'tagList'
+      expression: "Array.isArray(data.tags) ? data.tags.join(', ') : ''"

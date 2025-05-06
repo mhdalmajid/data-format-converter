@@ -1,0 +1,95 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": 32,
+    "isActive": true,
+    "joinDate": "2022-05-10",
+    "tags": ["developer", "frontend"],
+    "address": {
+      "street": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94105"
+    },
+    "projects": [
+      { "id": 1, "name": "Website Redesign" },
+      { "id": 2, "name": "Mobile App" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "age": 28,
+    "isActive": true,
+    "joinDate": "2023-02-15",
+    "tags": ["designer", "ux"],
+    "address": {
+      "street": "456 Market St",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10001"
+    },
+    "projects": [
+      { "id": 2, "name": "Mobile App" },
+      { "id": 3, "name": "Design System" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Bob Johnson",
+    "email": "bob@example.com",
+    "age": 41,
+    "isActive": false,
+    "joinDate": "2021-11-30",
+    "tags": ["developer", "backend"],
+    "address": {
+      "street": "789 Park Ave",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101"
+    },
+    "projects": [{ "id": 4, "name": "API Integration" }]
+  },
+  {
+    "id": 4,
+    "name": "Alice Williams",
+    "email": "alice@example.com",
+    "age": 35,
+    "isActive": true,
+    "joinDate": "2022-08-22",
+    "tags": ["product", "management"],
+    "address": {
+      "street": "321 Oak St",
+      "city": "Austin",
+      "state": "TX",
+      "zip": "73301"
+    },
+    "projects": [
+      { "id": 2, "name": "Mobile App" },
+      { "id": 5, "name": "Product Roadmap" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Charlie Brown",
+    "email": "charlie@example.com",
+    "age": 26,
+    "isActive": true,
+    "joinDate": "2023-04-01",
+    "tags": ["developer", "fullstack"],
+    "address": {
+      "street": "555 Pine St",
+      "city": "Portland",
+      "state": "OR",
+      "zip": "97201"
+    },
+    "projects": [
+      { "id": 1, "name": "Website Redesign" },
+      { "id": 4, "name": "API Integration" },
+      { "id": 6, "name": "Database Migration" }
+    ]
+  }
+]

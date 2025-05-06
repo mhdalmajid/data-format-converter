@@ -1,0 +1,196 @@
+{
+  "name": "datamorph",
+  "displayName": "DataMorph",
+  "description": "Convert between CSV, Excel (.xlsx), and JSON formats directly within VSCode",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "publisher": "datamorph",
+  "categories": [
+    "Data Science",
+    "Formatters"
+  ],
+  "keywords": [
+    "csv",
+    "excel",
+    "json",
+    "conversion",
+    "data"
+  ],
+  "icon": "media/datamorph-icon.png",
+  "activationEvents": [
+    "onLanguage:csv",
+    "onLanguage:json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "datamorph.convertToJSON",
+        "title": "DataMorph: Convert to JSON"
+      },
+      {
+        "command": "datamorph.convertToCSV",
+        "title": "DataMorph: Convert to CSV"
+      },
+      {
+        "command": "datamorph.convertToExcel",
+        "title": "DataMorph: Convert to Excel (.xlsx)"
+      },
+      {
+        "command": "datamorph.previewData",
+        "title": "DataMorph: Preview Data"
+      },
+      {
+        "command": "datamorph.batchConvert",
+        "title": "DataMorph: Batch Convert Files"
+      },
+      {
+        "command": "datamorph.createSampleExcel",
+        "title": "DataMorph: Create Sample Excel File"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceExtname == .json",
+          "command": "datamorph.convertToCSV",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .json",
+          "command": "datamorph.convertToExcel",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .csv",
+          "command": "datamorph.convertToJSON",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .csv",
+          "command": "datamorph.convertToExcel",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .xlsx",
+          "command": "datamorph.convertToJSON",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .xlsx",
+          "command": "datamorph.convertToCSV",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(json|csv|xlsx|xls)$/",
+          "command": "datamorph.previewData",
+          "group": "datamorph"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .json",
+          "command": "datamorph.convertToCSV",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .json",
+          "command": "datamorph.convertToExcel",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .csv",
+          "command": "datamorph.convertToJSON",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .csv",
+          "command": "datamorph.convertToExcel",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .xlsx",
+          "command": "datamorph.convertToJSON",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname == .xlsx",
+          "command": "datamorph.convertToCSV",
+          "group": "datamorph"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "datamorph.batchConvert",
+          "group": "datamorph"
+        },
+        {
+          "when": "resourceExtname =~ /\\.(json|csv|xlsx|xls)$/",
+          "command": "datamorph.previewData",
+          "group": "datamorph"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DataMorph",
+      "properties": {
+        "datamorph.preserveDataTypes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Try to preserve data types when converting between formats"
+        },
+        "datamorph.csvDelimiter": {
+          "type": "string",
+          "default": ",",
+          "description": "Delimiter to use for CSV files"
+        },
+        "datamorph.jsonIndentation": {
+          "type": "number",
+          "default": 2,
+          "description": "Number of spaces for JSON indentation"
+        },
+        "datamorph.useWebWorkers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use web workers for heavy processing (recommended for large files)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/papaparse": "^5.3.14",
+    "@types/vscode": "^1.99.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "csv-parse": "^5.6.0",
+    "csv-stringify": "^6.5.2",
+    "js-yaml": "^4.1.0",
+    "papaparse": "^5.5.2",
+    "xlsx": "^0.18.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/datamorph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/datamorph/issues"
+  }
+}
