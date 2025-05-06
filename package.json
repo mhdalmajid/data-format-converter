@@ -188,9 +188,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/datamorph.git"
+    "url": "https://github.com/mohammedalmajid/datamorph.git"
   },
   "bugs": {
-    "url": "https://github.com/username/datamorph/issues"
+    "url": "https://github.com/mohammedalmajid/datamorph/issues"
   }
 }
