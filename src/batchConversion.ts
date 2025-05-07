@@ -56,7 +56,7 @@ export class BatchConversionProvider {
     const conversionOptions: ConversionOptions = {
       targetFormat: formatMapping[targetFormat],
       preserveTypes: vscode.workspace
-        .getConfiguration('datamorph')
+        .getConfiguration('dataconverter')
         .get('preserveDataTypes', true),
       overwriteFiles: false,
     };
@@ -161,16 +161,63 @@ export class BatchConversionProvider {
         const total = files.length;
         let completed = 0;
         let skipped = 0;
+        let failed = 0;
         const errors: string[] = [];
 
-        for (const file of files) {
+        // Get batch size from configuration with default of 5
+        const batchSize = vscode.workspace
+          .getConfiguration('dataconverter')
+          .get('batchProcessingSize', 5);
+
+        // Track processing state
+        let isPaused = false;
+        let startTime = Date.now();
+
+        // Process files in batches
+        for (let i = 0; i < files.length; i++) {
+          // Check for cancellation
           if (token.isCancellationRequested) {
+            vscode.window.showInformationMessage('File conversion cancelled.');
             break;
           }
 
+          // Handle paused state
+          if (isPaused) {
+            const resumeResponse = await vscode.window.showInformationMessage(
+              'Conversion is paused. Would you like to resume?',
+              'Resume',
+              'Cancel'
+            );
+
+            if (resumeResponse === 'Resume') {
+              isPaused = false;
+            } else {
+              vscode.window.showInformationMessage(
+                'File conversion cancelled.'
+              );
+              break;
+            }
+          }
+
+          const file = files[i];
+
+          // Calculate and display ETA and speed statistics
+          const elapsedMs = Date.now() - startTime;
+          const filesPerSecond =
+            i > 0 ? (i / (elapsedMs / 1000)).toFixed(2) : '0.00';
+          const remainingFiles = total - i;
+          const estimatedSecondsRemaining =
+            i > 0 ? Math.round(remainingFiles / (i / (elapsedMs / 1000))) : 0;
+          const etaText =
+            estimatedSecondsRemaining > 0
+              ? `ETA: ${this.formatTimeRemaining(estimatedSecondsRemaining)}`
+              : '';
+
           // Update progress
           progress.report({
-            message: `Converting ${file.fileName} (${completed}/${total})`,
+            message: `Converting ${file.fileName} (${
+              i + 1
+            }/${total}) - ${filesPerSecond} files/sec ${etaText}`,
             increment: (1 / total) * 100,
           });
 
@@ -202,17 +249,100 @@ export class BatchConversionProvider {
             await this.executeConversion(file, outputPath, options);
             completed++;
           } catch (error) {
-            errors.push(
-              `Error converting ${file.fileName}: ${(error as Error).message}`
+            failed++;
+            const errorMessage = `Error converting ${file.fileName}: ${
+              (error as Error).message
+            }`;
+            errors.push(errorMessage);
+
+            // Optionally log errors to output channel
+            this.logError(errorMessage);
+          }
+
+          // Check if we've completed a batch and there are more files to process
+          if ((i + 1) % batchSize === 0 && i < files.length - 1) {
+            // Calculate progress statistics
+            const percentComplete = Math.round(((i + 1) / total) * 100);
+            const currentSpeed = (i + 1) / (elapsedMs / 1000);
+
+            // Ask user if they want to continue processing
+            const continueResponse = await vscode.window.showInformationMessage(
+              `Processed ${i + 1} of ${
+                files.length
+              } files (${completed} converted, ${skipped} skipped, ${failed} failed).\n` +
+                `Progress: ${percentComplete}% complete at ${currentSpeed.toFixed(
+                  2
+                )} files/sec.\n` +
+                `Would you like to continue?`,
+              { modal: false },
+              'Continue',
+              'Pause',
+              'View Errors',
+              'Stop'
             );
+
+            // Handle user response
+            switch (continueResponse) {
+              case 'Stop':
+                // User chose to stop entirely
+                const finalStats = `Summary: ${completed} converted, ${skipped} skipped, ${failed} failed.`;
+                vscode.window.showInformationMessage(
+                  `Conversion stopped. ${finalStats}`
+                );
+                return;
+
+              case 'Pause':
+                // User chose to pause - we'll handle this at the start of next iteration
+                isPaused = true;
+                break;
+
+              case 'View Errors':
+                // Show error details in a new document if there are any
+                if (errors.length > 0) {
+                  const errorDoc = await vscode.workspace.openTextDocument({
+                    content: errors.join('\n\n'),
+                    language: 'plaintext',
+                  });
+                  await vscode.window.showTextDocument(errorDoc);
+
+                  // Ask if user wants to continue after viewing errors
+                  const continueAfterErrors =
+                    await vscode.window.showInformationMessage(
+                      'Would you like to continue processing files?',
+                      'Continue',
+                      'Stop'
+                    );
+
+                  if (continueAfterErrors !== 'Continue') {
+                    return;
+                  }
+                } else {
+                  vscode.window.showInformationMessage(
+                    'No errors encountered so far.'
+                  );
+                }
+                break;
+
+              // Default is to continue processing
+              default:
+                // Just continue to the next batch
+                break;
+            }
           }
         }
+
+        // Calculate final statistics
+        const totalTime = (Date.now() - startTime) / 1000;
+        const averageSpeed =
+          total > 0 ? (completed / totalTime).toFixed(2) : '0.00';
 
         // Show summary
         if (errors.length > 0) {
           vscode.window
             .showErrorMessage(
-              `Completed: ${completed}, Skipped: ${skipped}, Errors: ${errors.length}`,
+              `Conversion completed in ${this.formatTime(totalTime)}.\n` +
+                `Completed: ${completed}, Skipped: ${skipped}, Errors: ${errors.length}\n` +
+                `Average speed: ${averageSpeed} files/sec`,
               'Show Details'
             )
             .then(selection => {
@@ -227,10 +357,44 @@ export class BatchConversionProvider {
             });
         } else {
           vscode.window.showInformationMessage(
-            `Successfully converted ${completed} files. Skipped: ${skipped}.`
+            `Conversion completed in ${this.formatTime(totalTime)}.\n` +
+              `Successfully converted ${completed} files. Skipped: ${skipped}.\n` +
+              `Average speed: ${averageSpeed} files/sec`
           );
         }
       }
+    );
+  }
+
+  private formatTime(seconds: number): string {
+    if (seconds < 60) {
+      return `${seconds.toFixed(1)}s`;
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${minutes}m ${Math.round(remainingSeconds)}s`;
+  }
+
+  private formatTimeRemaining(seconds: number): string {
+    if (seconds < 60) {
+      return `${seconds}s`;
+    } else if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      return `${minutes}m`;
+    } else {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}h ${minutes}m`;
+    }
+  }
+
+  private logError(errorMessage: string): void {
+    // Get or create output channel (this would be initialized elsewhere)
+    const outputChannel = vscode.window.createOutputChannel('DataMorph');
+    outputChannel.appendLine(
+      `[${new Date().toLocaleTimeString()}] ${errorMessage}`
     );
   }
 
@@ -274,7 +438,7 @@ export class BatchConversionProvider {
 
       // Write back to file
       const indentation = vscode.workspace
-        .getConfiguration('datamorph')
+        .getConfiguration('dataconverter')
         .get('jsonIndentation', 2);
       fs.writeFileSync(
         outputPath,
@@ -344,16 +508,16 @@ export class BatchConversionProvider {
 
     const commandMap: Record<string, Record<string, string>> = {
       csv: {
-        json: 'datamorph.convertToJSON',
-        excel: 'datamorph.convertToExcel',
+        json: 'dataconverter.convertToJSON',
+        excel: 'dataconverter.convertToExcel',
       },
       json: {
-        csv: 'datamorph.convertToCSV',
-        excel: 'datamorph.convertToExcel',
+        csv: 'dataconverter.convertToCSV',
+        excel: 'dataconverter.convertToExcel',
       },
       excel: {
-        csv: 'datamorph.convertToCSV',
-        json: 'datamorph.convertToJSON',
+        csv: 'dataconverter.convertToCSV',
+        json: 'dataconverter.convertToJSON',
       },
     };
 

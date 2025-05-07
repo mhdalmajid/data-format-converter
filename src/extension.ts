@@ -25,7 +25,7 @@ import { DataPreviewPanel } from './dataPreview';
 import { BatchConversionProvider } from './batchConversion';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('DataMorph extension is now active!');
+  console.log('Data Format Converter extension is now active!');
 
   // Register data preview provider
   const dataPreviewProvider = new DataPreviewPanel(context.extensionUri);
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register convert to JSON command
   const convertToJsonCommand = vscode.commands.registerCommand(
-    'datamorph.convertToJSON',
+    'dataconverter.convertToJSON',
     async (fileUri?: vscode.Uri) => {
       try {
         // Get the file URI if not provided via right-click
@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         let result;
         const useWebWorkers = vscode.workspace
-          .getConfiguration('datamorph')
+          .getConfiguration('dataconverter')
           .get('useWebWorkers', true);
 
         if (fileExtension === '.csv') {
@@ -74,33 +74,30 @@ export function activate(context: vscode.ExtensionContext) {
               fs.readFileSync(uri.fsPath, 'utf8')
             );
           } else {
-            result = await csvToJson(fs.readFileSync(uri.fsPath, 'utf8'));
+            result = await csvToJson(uri.fsPath);
           }
         } else if (fileExtension === '.xlsx') {
           result = await excelToJson(uri.fsPath);
         } else {
           vscode.window.showErrorMessage(
-            'Selected file must be a CSV or Excel file.'
+            'Unsupported file format. Please select a CSV or Excel file.'
           );
           return;
         }
 
         // Write the result to file
-        const indentation = vscode.workspace
-          .getConfiguration('datamorph')
-          .get('jsonIndentation', 2);
-        fs.writeFileSync(outputPath, JSON.stringify(result, null, indentation));
+        fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
 
         vscode.window.showInformationMessage(
-          `Successfully converted ${path.basename(uri.fsPath)} to JSON.`
+          `Successfully converted to JSON: ${path.basename(outputPath)}`
         );
 
-        // Open the file
-        const doc = await vscode.workspace.openTextDocument(outputPath);
-        await vscode.window.showTextDocument(doc);
-      } catch (error) {
+        // Open the new file in the editor
+        const document = await vscode.workspace.openTextDocument(outputPath);
+        await vscode.window.showTextDocument(document);
+      } catch (error: any) {
         vscode.window.showErrorMessage(
-          `Error converting file: ${(error as Error).message}`
+          `Error converting file: ${error.message}`
         );
       }
     }
@@ -108,10 +105,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register convert to CSV command
   const convertToCsvCommand = vscode.commands.registerCommand(
-    'datamorph.convertToCSV',
+    'dataconverter.convertToCSV',
     async (fileUri?: vscode.Uri) => {
       try {
-        // Get the file URI if not provided via right-click
+        // Get the file URI if not provided
         const uri = fileUri || vscode.window.activeTextEditor?.document.uri;
         if (!uri) {
           vscode.window.showErrorMessage(
@@ -136,25 +133,22 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         let result;
-        const delimiter = vscode.workspace
-          .getConfiguration('datamorph')
-          .get('csvDelimiter', ',');
         const useWebWorkers = vscode.workspace
-          .getConfiguration('datamorph')
+          .getConfiguration('dataconverter')
           .get('useWebWorkers', true);
 
         if (fileExtension === '.json') {
-          const jsonContent = fs.readFileSync(uri.fsPath, 'utf8');
           if (useWebWorkers) {
+            const jsonContent = fs.readFileSync(uri.fsPath, 'utf8');
             result = await createWebWorker('jsonToCsv', jsonContent);
           } else {
-            result = await jsonToCsv(jsonContent, delimiter);
+            result = await jsonToCsv(uri.fsPath);
           }
         } else if (fileExtension === '.xlsx') {
-          result = await excelToCsv(uri.fsPath, delimiter);
+          result = await excelToCsv(uri.fsPath);
         } else {
           vscode.window.showErrorMessage(
-            'Selected file must be a JSON or Excel file.'
+            'Unsupported file format. Please select a JSON or Excel file.'
           );
           return;
         }
@@ -163,15 +157,15 @@ export function activate(context: vscode.ExtensionContext) {
         fs.writeFileSync(outputPath, result);
 
         vscode.window.showInformationMessage(
-          `Successfully converted ${path.basename(uri.fsPath)} to CSV.`
+          `Successfully converted to CSV: ${path.basename(outputPath)}`
         );
 
-        // Open the file
-        const doc = await vscode.workspace.openTextDocument(outputPath);
-        await vscode.window.showTextDocument(doc);
-      } catch (error) {
+        // Open the new file in the editor
+        const document = await vscode.workspace.openTextDocument(outputPath);
+        await vscode.window.showTextDocument(document);
+      } catch (error: any) {
         vscode.window.showErrorMessage(
-          `Error converting file: ${(error as Error).message}`
+          `Error converting file: ${error.message}`
         );
       }
     }
@@ -179,10 +173,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register convert to Excel command
   const convertToExcelCommand = vscode.commands.registerCommand(
-    'datamorph.convertToExcel',
+    'dataconverter.convertToExcel',
     async (fileUri?: vscode.Uri) => {
       try {
-        // Get the file URI if not provided via right-click
+        // Get the file URI if not provided
         const uri = fileUri || vscode.window.activeTextEditor?.document.uri;
         if (!uri) {
           vscode.window.showErrorMessage(
@@ -230,7 +224,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register preview data command
   const previewDataCommand = vscode.commands.registerCommand(
-    'datamorph.previewData',
+    'dataconverter.previewData', // Changed from 'datamorph.previewData' to match package.json
     async (fileUri?: vscode.Uri) => {
       try {
         // Get the file URI if not provided via right-click
@@ -254,7 +248,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register batch convert command
   const batchConvertCommand = vscode.commands.registerCommand(
-    'datamorph.batchConvert',
+    'dataconverter.batchConvert', // Changed from 'datamorph.batchConvert' to match package.json
     async (folderUri?: vscode.Uri) => {
       try {
         // Get the folder URI if not provided via right-click
@@ -284,7 +278,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register create sample Excel file command
   const createSampleExcelCommand = vscode.commands.registerCommand(
-    'datamorph.createSampleExcel',
+    'dataconverter.createSampleExcel', // Changed from 'datamorph.createSampleExcel' to match package.json
     async () => {
       try {
         // Get workspace folders

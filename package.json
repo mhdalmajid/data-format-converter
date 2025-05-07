@@ -1,22 +1,28 @@
 {
-  "name": "datamorph",
-  "displayName": "DataMorph",
-  "description": "Convert between CSV, Excel (.xlsx), and JSON formats directly within VSCode",
+  "name": "data-format-converter",
+  "displayName": "Data Format Converter: CSV, JSON, Excel",
+  "description": "Effortlessly convert and transform data between CSV, Excel (.xlsx), and JSON formats with preview and batch processing capabilities",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.99.0"
   },
-  "publisher": "datamorph",
+  "publisher": "utbah",
   "categories": [
     "Data Science",
-    "Formatters"
+    "Formatters",
+    "Programming Languages"
   ],
   "keywords": [
     "csv",
     "excel",
     "json",
-    "conversion",
-    "data"
+    "data conversion",
+    "data transformation",
+    "xlsx",
+    "spreadsheet",
+    "data preview",
+    "batch conversion",
+    "file format"
   ],
   "icon": "media/datamorph-icon.png",
   "activationEvents": [
@@ -27,130 +33,130 @@
   "contributes": {
     "commands": [
       {
-        "command": "datamorph.convertToJSON",
-        "title": "DataMorph: Convert to JSON"
+        "command": "dataconverter.convertToJSON",
+        "title": "Data Converter: Convert to JSON"
       },
       {
-        "command": "datamorph.convertToCSV",
-        "title": "DataMorph: Convert to CSV"
+        "command": "dataconverter.convertToCSV",
+        "title": "Data Converter: Convert to CSV"
       },
       {
-        "command": "datamorph.convertToExcel",
-        "title": "DataMorph: Convert to Excel (.xlsx)"
+        "command": "dataconverter.convertToExcel",
+        "title": "Data Converter: Convert to Excel (.xlsx)"
       },
       {
-        "command": "datamorph.previewData",
-        "title": "DataMorph: Preview Data"
+        "command": "dataconverter.previewData",
+        "title": "Data Converter: Preview Data"
       },
       {
-        "command": "datamorph.batchConvert",
-        "title": "DataMorph: Batch Convert Files"
+        "command": "dataconverter.batchConvert",
+        "title": "Data Converter: Batch Convert Files"
       },
       {
-        "command": "datamorph.createSampleExcel",
-        "title": "DataMorph: Create Sample Excel File"
+        "command": "dataconverter.createSampleExcel",
+        "title": "Data Converter: Create Sample Excel File"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "when": "resourceExtname == .json",
-          "command": "datamorph.convertToCSV",
-          "group": "datamorph"
+          "command": "dataconverter.convertToCSV",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .json",
-          "command": "datamorph.convertToExcel",
-          "group": "datamorph"
+          "command": "dataconverter.convertToExcel",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .csv",
-          "command": "datamorph.convertToJSON",
-          "group": "datamorph"
+          "command": "dataconverter.convertToJSON",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .csv",
-          "command": "datamorph.convertToExcel",
-          "group": "datamorph"
+          "command": "dataconverter.convertToExcel",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .xlsx",
-          "command": "datamorph.convertToJSON",
-          "group": "datamorph"
+          "command": "dataconverter.convertToJSON",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .xlsx",
-          "command": "datamorph.convertToCSV",
-          "group": "datamorph"
+          "command": "dataconverter.convertToCSV",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname =~ /\\.(json|csv|xlsx|xls)$/",
-          "command": "datamorph.previewData",
-          "group": "datamorph"
+          "command": "dataconverter.previewData",
+          "group": "dataconverter"
         }
       ],
       "explorer/context": [
         {
           "when": "resourceExtname == .json",
-          "command": "datamorph.convertToCSV",
-          "group": "datamorph"
+          "command": "dataconverter.convertToCSV",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .json",
-          "command": "datamorph.convertToExcel",
-          "group": "datamorph"
+          "command": "dataconverter.convertToExcel",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .csv",
-          "command": "datamorph.convertToJSON",
-          "group": "datamorph"
+          "command": "dataconverter.convertToJSON",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .csv",
-          "command": "datamorph.convertToExcel",
-          "group": "datamorph"
+          "command": "dataconverter.convertToExcel",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .xlsx",
-          "command": "datamorph.convertToJSON",
-          "group": "datamorph"
+          "command": "dataconverter.convertToJSON",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname == .xlsx",
-          "command": "datamorph.convertToCSV",
-          "group": "datamorph"
+          "command": "dataconverter.convertToCSV",
+          "group": "dataconverter"
         },
         {
           "when": "explorerResourceIsFolder",
-          "command": "datamorph.batchConvert",
-          "group": "datamorph"
+          "command": "dataconverter.batchConvert",
+          "group": "dataconverter"
         },
         {
           "when": "resourceExtname =~ /\\.(json|csv|xlsx|xls)$/",
-          "command": "datamorph.previewData",
-          "group": "datamorph"
+          "command": "dataconverter.previewData",
+          "group": "dataconverter"
         }
       ]
     },
     "configuration": {
-      "title": "DataMorph",
+      "title": "Data Converter",
       "properties": {
-        "datamorph.preserveDataTypes": {
+        "dataconverter.preserveDataTypes": {
           "type": "boolean",
           "default": true,
           "description": "Try to preserve data types when converting between formats"
         },
-        "datamorph.csvDelimiter": {
+        "dataconverter.csvDelimiter": {
           "type": "string",
           "default": ",",
           "description": "Delimiter to use for CSV files"
         },
-        "datamorph.jsonIndentation": {
+        "dataconverter.jsonIndentation": {
           "type": "number",
           "default": 2,
           "description": "Number of spaces for JSON indentation"
         },
-        "datamorph.useWebWorkers": {
+        "dataconverter.useWebWorkers": {
           "type": "boolean",
           "default": true,
           "description": "Use web workers for heavy processing (recommended for large files)"
