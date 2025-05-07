@@ -2,7 +2,7 @@
   "name": "data-format-converter",
   "displayName": "Data Format Converter: CSV, JSON, Excel",
   "description": "Effortlessly convert and transform data between CSV, Excel (.xlsx), and JSON formats with preview and batch processing capabilities",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.99.0"
   },
